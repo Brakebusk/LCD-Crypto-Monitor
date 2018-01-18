@@ -6,5 +6,5 @@ The script uses the Adafruit Python CharLCD driver to write to the lcd character
 You also need pillow for graph processing:
 `pip3 install Pillow` or `apt-get install python3-pil`
 
-And BeautfulSoup for HTML parsing:
+And BeautifulSoup for HTML parsing:
 `pip3 install beautifulsoup4` or `apt-get install python3-bs4` (https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup)
