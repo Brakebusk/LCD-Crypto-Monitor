@@ -4,7 +4,7 @@ import time
 import Adafruit_CharLCD as LCD
 from graph import Graph #Show graphs of 7d development
 
-crypto = ("bitcoin", "ripple", "ethereum", "tron", "litecoin", "verge", "bitshares", "stellar", "raiblocks", "dogecoin", "neo", "request-network") #coins to monitor
+crypto = ("bitcoin", "ethereum", "ripple", "litecoin", "neo", "stellar", "tron", "raiblocks", "verge", "dogecoin") #coins to monitor
 monitorAll = False #Override crypto list and show all
 limit = 100 #If monitor all, this is sets the number of top x=limit coins from coinmarketcap to monitor
 
