@@ -29,6 +29,9 @@ for i in range(15): #Wait for internet connection, (by really just counting down
     lcd.message("Monitor in {}s..".format(15 - i))
     time.sleep(1)
 
+lcd.clear()
+lcd.message("Loading...")
+
 graph = None
 if enableGraph:
     graph = Graph(crypto, lcd) #Initialize graph
@@ -36,9 +39,6 @@ if enableGraph:
 monitoring = True
 while monitoring:
     try:
-        lcd.clear()
-        lcd.message("Loading...")
-
         output = [] #To be sent to screen
 
         data = urllib.request.urlopen("https://api.coinmarketcap.com/v1/ticker/?limit={}&convert={}".format(limit, currency)).read().decode("utf8")
