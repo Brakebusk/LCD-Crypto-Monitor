@@ -14,13 +14,19 @@ class Graph:
         self.LCDCharSize = (16, 2) #size of LCD by characters
         self.graphSize = (8, 1) #graphsize by 5*8 pixel characters (sadly chip only supports a maximum of 8 custom characters, [0] * [1] must not be >8)
         self.threshold = 1 #threshold when processing image for when to set character bit high state (0-255)
+
+        self.charSets = {} #Will hold character sets for each coin
     
     def refresh(self): #Refresh graphs
         raw_data = urllib.request.urlopen("https://coinmarketcap.com/").read().decode("utf8")
         self.parsed_html = BeautifulSoup(raw_data, "html5lib")
 
+        #Refresh character sets:
+        for coin in self.coins:
+            self.charSets[coin] = self._getCharacters(coin)
 
-    def getGraph(self, coin): #returns characters for selected coin
+
+    def _getCharacters(self, coin): #returns characters for selected coin
         coin_id = "id-" + coin
 
         characters = {} #will hold output characters with position as key (x, y) => (0, 0) == top left
@@ -60,29 +66,32 @@ class Graph:
         
         return characters
 
-    def writeBitmap(self, characters):
-        #write bitmap to LCD
-        index = 0
-        for r in range(self.graphSize[1]): #for each row
-            for c in range(self.graphSize[0]): #for each char block
-                #Create chars:
-                self.lcd.create_char(index, characters[c, r]) #create characters
-                index += 1
-                
-        #Write chars:
-        cursorX = self.LCDCharSize[0] - self.graphSize[0] #write graph to the right of the lcd
-        cursorBaseY = self.LCDCharSize[1] - self.graphSize[1] #ensure that graph is written as far down as possible
+    def writeBitmap(self, coin):
+        characters = self.charSets[coin]
 
-        #Write caption:
-        self.lcd.set_cursor(0, cursorBaseY)
-        self.lcd.message("7d line:")
+        if len(characters) > 0: #non-empty charSet
+            #write bitmap to LCD
+            index = 0
+            for r in range(self.graphSize[1]): #for each row
+                for c in range(self.graphSize[0]): #for each char block
+                    #Create chars:
+                    self.lcd.create_char(index, characters[c, r]) #create characters
+                    index += 1
+                    
+            #Write chars:
+            cursorX = self.LCDCharSize[0] - self.graphSize[0] #write graph to the right of the lcd
+            cursorBaseY = self.LCDCharSize[1] - self.graphSize[1] #ensure that graph is written as far down as possible
 
-        index = 0 #selected char RAM position
-        adresses = ("\x00", "\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07")
-        for r in range(cursorBaseY, cursorBaseY + self.graphSize[1]): #for each row
-            self.lcd.set_cursor(cursorX, r) #move cursor
-            msg = ""
-            for c in range(self.graphSize[0]): #for each char
-                msg += adresses[index]
-                index += 1
-            self.lcd.message(msg) #write to selected row
+            #Write caption:
+            self.lcd.set_cursor(0, cursorBaseY)
+            self.lcd.message("7d line:")
+
+            index = 0 #selected char RAM position
+            adresses = ("\x00", "\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07")
+            for r in range(cursorBaseY, cursorBaseY + self.graphSize[1]): #for each row
+                self.lcd.set_cursor(cursorX, r) #move cursor
+                msg = ""
+                for c in range(self.graphSize[0]): #for each char
+                    msg += adresses[index]
+                    index += 1
+                self.lcd.message(msg) #write to selected row
