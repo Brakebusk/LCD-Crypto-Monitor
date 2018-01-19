@@ -11,7 +11,7 @@ limit = 100 #If monitor all, this is sets the number of top x=limit coins from c
 currency = "USD" #USD/EUR
 curSymbol = {"USD": "$", "EUR": "€"}
 
-secondsPerCrypto = 7.5 #how many seconds before moving on to another crypto currency
+secondsPerCrypto = 6 #how many seconds before moving on to another crypto currency
 cyclesBeforeRefresh = 5 #how many cycles through each crypto currency before refreshing
 
 enableGraph = True #Enable loading graphs
@@ -96,8 +96,7 @@ while monitoring:
                     #Show graph
                     lcd.clear()
                     lcd.message(coin["top"])
-                    characters = graph.getGraph(coin["id"]) #Load custom characters
-                    graph.writeBitmap(characters)
+                    graph.writeBitmap(coin['id'])
                     time.sleep(secondsPerCrypto / views)
                     lcd.clear()
 
